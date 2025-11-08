@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Promedio - Tema Hadas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Pacifico&family=Quicksand:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Estrellas mágicas flotantes */
+        .star {
+            position: absolute;
+            color: #fff;
+            font-size: 20px;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 
+                        0 0 40px rgba(255, 182, 193, 0.5),
+                        inset 0 0 30px rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            border: 3px solid rgba(255, 182, 193, 0.3);
+        }
+        
+        /* Iconos decorativos */
+        .fairy-icon {
+            position: absolute;
+            font-size: 40px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .fairy-icon.top-left {
+            top: -20px;
+            left: -20px;
+            color: #ff69b4;
+        }
+        
+        .fairy-icon.top-right {
+            top: -20px;
+            right: -20px;
+            color: #ff1493;
+        }
+        
+        .fairy-icon.bottom-left {
+            bottom: -20px;
+            left: -20px;
+            color: #c71585;
+        }
+        
+        .fairy-icon.bottom-right {
+            bottom: -20px;
+            right: -20px;
+            color: #ff69b4;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #ff1493, #ff69b4, #c71585);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1.3;
+        }
+        
+        .subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+        
+        .motivational-phrase {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9rem;
+            color: #555;
+            font-style: italic;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+            border-radius: 15px;
+            border-left: 4px solid #ff69b4;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        label i {
+            margin-right: 8px;
+            color: #ff69b4;
+            font-size: 1.1rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #ffc0cb;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: 'Quicksand', sans-serif;
+            transition: all 0.3s ease;
+            background: #fff;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #ff69b4;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        input::placeholder {
+            color: #bbb;
+            font-weight: 400;
+        }
+        
+        .btn-calculate {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 20, 147, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+        
+        .btn-calculate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 20, 147, 0.4);
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+        }
+        
+        .btn-calculate:active {
+            transform: translateY(0);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 35px;
+            border-radius: 25px;
+            text-align: center;
+            display: none;
+            animation: fadeInBounce 0.6s ease;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transform-origin: center;
+        }
+        
+        @keyframes fadeInBounce {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.8) translateY(30px); 
+            }
+            60% { 
+                opacity: 1; 
+                transform: scale(1.05) translateY(-5px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0); 
+            }
+        }
+        
+        .result-container.approved {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border: 5px solid #4CAF50;
+        }
+        
+        .result-container.failed {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border: 5px solid #e67e22;
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .result-average {
+            font-size: 4.5rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            margin: 20px 0;
+            color: #2c3e50;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+            line-height: 1;
+            animation: scaleUp 0.5s ease 0.3s both;
+        }
+        
+        @keyframes scaleUp {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .result-status {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding: 15px 30px;
+            border-radius: 15px;
+            display: inline-block;
+            animation: slideIn 0.5s ease 0.5s both;
+        }
+        
+        .result-status.approved-status {
+            background: #4CAF50;
+            color: white;
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .result-status.failed-status {
+            background: #e67e22;
+            color: white;
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.4);
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(-50px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+        
+        .result-message {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            font-style: italic;
+            margin-top: 20px;
+            font-family: 'Quicksand', sans-serif;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #ffc0cb;
+        }
+        
+        .creator {
+            font-family: 'Pacifico', cursive;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .creator .heart {
+            color: #ff1493;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+            display: none;
+            font-weight: 600;
+            text-align: center;
+            animation: shake 0.5s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 0.85rem;
+            }
+            
+            .motivational-phrase {
+                font-size: 0.85rem;
+            }
+            
+            .result-average {
+                font-size: 2.5rem;
+            }
+            
+            .result-status {
+                font-size: 1.2rem;
+            }
+            
+            .fairy-icon {
+                font-size: 30px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .title {
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                padding: 25px 15px;
+            }
+            
+            input {
+                padding: 12px 15px;
+            }
+            
+            .btn-calculate {
+                padding: 14px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Estrellas flotantes -->
+    <i class="fas fa-star star" style="top: 10%; left: 10%;"></i>
+    <i class="fas fa-star star" style="top: 20%; right: 15%; animation-delay: 1s;"></i>
+    <i class="fas fa-sparkles star" style="bottom: 15%; left: 20%; animation-delay: 2s;"></i>
+    <i class="fas fa-star star" style="bottom: 25%; right: 10%; animation-delay: 1.5s;"></i>
+    <i class="fas fa-sparkles star" style="top: 50%; left: 5%; animation-delay: 0.5s;"></i>
+    <i class="fas fa-star star" style="top: 60%; right: 5%; animation-delay: 2.5s;"></i>
+    
+    <div class="container">
+        <!-- Iconos decorativos de hadas -->
+        <i class="fas fa-magic fairy-icon top-left"></i>
+        <i class="fas fa-wand-sparkles fairy-icon top-right"></i>
+        <i class="fas fa-star fairy-icon bottom-left"></i>
+        <i class="fas fa-heart fairy-icon bottom-right"></i>
+        
+        <div class="header">
+            <h1 class="title">✨ Calculadora de Promedio Académico ✨</h1>
+            <p class="subtitle">Evalúa tu rendimiento estudiantil</p>
+            <div class="motivational-phrase">
+                <i class="fas fa-book-open"></i> "El éxito académico no se mide solo en números, sino en el esfuerzo y dedicación que pones cada día. ¡Sigue adelante!"
+            </div>
+        </div>
+        
+        <form id="gradeForm">
+            <div class="form-group">
+                <label for="nota1">
+                    <i class="fas fa-pencil-alt"></i> Primera Nota
+                </label>
+                <input type="number" id="nota1" placeholder="Ingresa tu primera nota (0-20)" min="0" max="20" step="0.1">
+            </div>
+            
+            <div class="form-group">
+                <label for="nota2">
+                    <i class="fas fa-pen"></i> Segunda Nota
+                </label>
+                <input type="number" id="nota2" placeholder="Ingresa tu segunda nota (0-20)" min="0" max="20" step="0.1">
+            </div>
+            
+            <div class="form-group">
+                <label for="nota3">
+                    <i class="fas fa-highlighter"></i> Tercera Nota
+                </label>
+                <input type="number" id="nota3" placeholder="Ingresa tu tercera nota (0-20)" min="0" max="20" step="0.1">
+            </div>
+            
+            <div class="form-group">
+                <label for="nota4">
+                    <i class="fas fa-marker"></i> Cuarta Nota
+                </label>
+                <input type="number" id="nota4" placeholder="Ingresa tu cuarta nota (0-20)" min="0" max="20" step="0.1">
+            </div>
+            
+            <button type="submit" class="btn-calculate">
+                <i class="fas fa-calculator"></i> Calcular Promedio
+            </button>
+            
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+        
+        <div class="result-container" id="resultContainer">
+            <i class="fas fa-trophy" style="font-size: 4rem; color: #f39c12; margin-bottom: 15px; animation: bounce 1s ease infinite;"></i>
+            
+            <div class="result-title">📊 CÁLCULO DEL PROMEDIO:</div>
+            
+            <!-- Mostrar la operación matemática -->
+            <div id="operationDisplay" style="font-size: 1.3rem; font-weight: 600; color: #2c3e50; margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.7); border-radius: 15px; border: 2px dashed #ff69b4; font-family: 'Courier New', monospace;"></div>
+            
+            <div class="result-title">📊 TU PROMEDIO FINAL ES:</div>
+            
+            <div class="result-average" id="resultAverage"></div>
+            
+            <div class="result-status" id="resultStatus"></div>
+            
+            <div class="result-message" id="resultMessage"></div>
+        </div>
+        
+        <div class="footer">
+            <div class="creator">
+                By Fabiana Benites <span class="heart">❤️</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Referencias a elementos del DOM
+        const form = document.getElementById('gradeForm');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultStatus = document.getElementById('resultStatus');
+        const resultAverage = document.getElementById('resultAverage');
+        const resultMessage = document.getElementById('resultMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // Mensajes motivacionales según el rango de promedio
+        const messages = {
+            excellent: [
+                "¡Excelente trabajo! Tu dedicación y esfuerzo se reflejan en tus resultados. ¡Sigue así!",
+                "¡Sobresaliente! Eres un ejemplo de constancia y disciplina académica.",
+                "¡Felicitaciones! Tu compromiso con el aprendizaje es admirable."
+            ],
+            good: [
+                "¡Buen trabajo! Estás en el camino correcto. Mantén tu esfuerzo y lograrás aún más.",
+                "¡Aprobado! Tu dedicación está dando frutos. Continúa con esa actitud positiva.",
+                "¡Bien hecho! Demuestras responsabilidad y compromiso con tus estudios."
+            ],
+            needsImprovement: [
+                "Recuerda que cada desafío es una oportunidad para crecer. ¡No te rindas!",
+                "Este resultado es un punto de partida. Con más dedicación y apoyo, mejorarás.",
+                "Los tropiezos son parte del aprendizaje. Analiza dónde puedes mejorar y vuelve con más fuerza."
+            ]
+        };
+        
+        // Función principal para calcular el promedio
+        function calcularPromedio(nota1, nota2, nota3, nota4) {
+            // Suma de las 4 notas dividido entre 4
+            const suma = nota1 + nota2 + nota3 + nota4;
+            const promedio = suma / 4;
+            return promedio;
+        }
+        
+        // Event listener para el formulario
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Ocultar mensajes previos
+            errorMessage.style.display = 'none';
+            resultContainer.style.display = 'none';
+            
+            // Obtener valores de los inputs
+            const nota1 = document.getElementById('nota1').value;
+            const nota2 = document.getElementById('nota2').value;
+            const nota3 = document.getElementById('nota3').value;
+            const nota4 = document.getElementById('nota4').value;
+            
+            // Validación 1: Verificar que todos los campos estén llenos
+            if (!nota1 || !nota2 || !nota3 || !nota4) {
+                showError('⚠️ Por favor, completa todas las notas antes de calcular.');
+                return;
+            }
+            
+            // Convertir strings a números decimales
+            const n1 = parseFloat(nota1);
+            const n2 = parseFloat(nota2);
+            const n3 = parseFloat(nota3);
+            const n4 = parseFloat(nota4);
+            
+            // Validación 2: Verificar que sean números válidos
+            if (isNaN(n1) || isNaN(n2) || isNaN(n3) || isNaN(n4)) {
+                showError('⚠️ Por favor, ingresa valores numéricos válidos.');
+                return;
+            }
+            
+            // Validación 3: Verificar rango de notas (0-20)
+            if (n1 < 0 || n1 > 20 || n2 < 0 || n2 > 20 || n3 < 0 || n3 > 20 || n4 < 0 || n4 > 20) {
+                showError('⚠️ Las notas deben estar entre 0 y 20. Por favor, verifica los valores ingresados.');
+                return;
+            }
+            
+            // CÁLCULO DEL PROMEDIO - Operación principal
+            const promedio = calcularPromedio(n1, n2, n3, n4);
+            const promedioRedondeado = promedio.toFixed(2);
+            
+            // Crear la visualización de la operación matemática
+            const suma = n1 + n2 + n3 + n4;
+            const operacionHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 10px;">
+                        <strong>OPERACIÓN:</strong>
+                    </div>
+                    <div style="font-size: 1.4rem; line-height: 2;">
+                        Promedio = (${n1} + ${n2} + ${n3} + ${n4}) ÷ 4
+                    </div>
+                    <div style="font-size: 1.4rem; margin: 10px 0;">
+                        Promedio = ${suma} ÷ 4
+                    </div>
+                    <div style="font-size: 1.6rem; font-weight: 700; color: #ff1493;">
+                        Promedio = ${promedioRedondeado}
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar en consola para verificación
+            console.log('=== CÁLCULO DE PROMEDIO ===');
+            console.log(`Nota 1: ${n1}`);
+            console.log(`Nota 2: ${n2}`);
+            console.log(`Nota 3: ${n3}`);
+            console.log(`Nota 4: ${n4}`);
+            console.log(`Suma: ${suma}`);
+            console.log(`Operación: (${n1} + ${n2} + ${n3} + ${n4}) ÷ 4`);
+            console.log(`Promedio: ${promedio}`);
+            console.log(`Promedio redondeado: ${promedioRedondeado}`);
+            
+            // Determinar estado (APROBADO o DESAPROBADO)
+            let status, statusClass, statusTextClass, messageCategory, icon;
+            
+            if (promedio >= 13) {
+                // APROBADO
+                status = '✅ APROBADO';
+                statusClass = 'approved';
+                statusTextClass = 'approved-status';
+                
+                if (promedio >= 18) {
+                    messageCategory = 'excellent';
+                    icon = '<i class="fas fa-medal" style="color: #f39c12; font-size: 1.5rem;"></i>';
+                } else {
+                    messageCategory = 'good';
+                    icon = '<i class="fas fa-check-circle" style="color: #27ae60; font-size: 1.5rem;"></i>';
+                }
+            } else {
+                // DESAPROBADO
+                status = '⚠️ DESAPROBADO';
+                statusClass = 'failed';
+                statusTextClass = 'failed-status';
+                messageCategory = 'needsImprovement';
+                icon = '<i class="fas fa-exclamation-triangle" style="color: #e67e22; font-size: 1.5rem;"></i>';
+            }
+            
+            // Seleccionar mensaje motivacional aleatorio
+            const randomMessage = messages[messageCategory][Math.floor(Math.random() * messages[messageCategory].length)];
+            
+            // Mostrar resultado en la interfaz de forma VISIBLE
+            resultContainer.className = `result-container ${statusClass}`;
+            resultContainer.style.display = 'block';
+            
+            // Mostrar la operación matemática
+            document.getElementById('operationDisplay').innerHTML = operacionHTML;
+            
+            resultAverage.textContent = promedioRedondeado;
+            
+            resultStatus.className = `result-status ${statusTextClass}`;
+            resultStatus.innerHTML = status;
+            
+            resultMessage.innerHTML = `${icon}<br><br>${randomMessage}`;
+            
+            // Scroll suave hacia el resultado para asegurar visibilidad
+            setTimeout(() => {
+                resultContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        });
+        
+        // Función para mostrar mensajes de error
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            // Auto-ocultar después de 4 segundos
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 4000);
+        }
+        
+        // Validación en tiempo real para prevenir valores inválidos
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                // Prevenir valores mayores a 20
+                if (parseFloat(this.value) > 20) {
+                    this.value = 20;
+                    showError('⚠️ La nota máxima es 20. Se ha ajustado automáticamente.');
+                }
+                // Prevenir valores negativos
+                if (parseFloat(this.value) < 0) {
+                    this.value = 0;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
